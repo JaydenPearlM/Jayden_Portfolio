@@ -1,0 +1,111 @@
+/* src/pages/HomePage.css */
+
+/* 1) Import Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* 2) Pastel palette variables */
+:root {
+  --pastel-green: #D1FAE5;
+  --pastel-teal:  #AFECEF;
+  --pastel-blue:  #DBEAFE;
+  --text-dark:    #1F2937;
+}
+
+/* 3) Global font & base bg */
+.homePage {
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  background-color: var(--pastel-green);
+}
+
+/* 4) Top banner */
+.homePage .banner {
+  width: 91.666667%;  /* matches w-11/12 */
+  max-width: 768px;   /* matches md:w-3/4 */
+  margin: 0 auto 1.5rem;
+  padding: 0.75rem;
+  background: linear-gradient(
+    90deg,
+    var(--pastel-green),
+    var(--pastel-teal),
+    var(--pastel-blue)
+  );
+  text-align: center;
+  border-radius: 1rem;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+.homePage .banner h1 {
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 800;
+  color: var(--text-dark);
+  margin: 0;
+}
+.homePage .banner p {
+  margin-top: 0.5rem;
+  font-size: 1rem; /* text-base */
+  font-style: italic;
+  color: var(--text-dark);
+}
+
+/* 5) Main content wrapper */
+.homePage .main-content {
+  display: flex;
+  max-width: 1120px;       /* roughly max-w-7xl */
+  margin: 0 auto;
+  padding: 2rem;           /* p-8 */
+  background: rgba(255,255,255,0.8);
+  border-radius: 0.75rem;  /* rounded-lg */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  gap: 2rem;
+}
+
+/* 6) About section */
+.homePage .about {
+  flex: 1 1 30%;
+}
+.homePage .about .actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem; /* mb-6 */
+}
+.homePage .about .actions a,
+.homePage .about .actions button {
+  padding: 0.5rem 1rem;   /* px-4 py-2 */
+  border-radius: 0.375rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.homePage .about .actions .resume { background: #D1FAE5; color: var(--text-dark); }
+.homePage .about .actions .cv     { background: #AFECEF; color: var(--text-dark); }
+.homePage .about .actions .linkedin{ background: #DBEAFE; color: var(--text-dark); }
+
+.homePage .about h2 {
+  font-size: 1.875rem; /* text-3xl */
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+}
+.homePage .about p {
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+
+/* 7) Divider */
+.homePage .divider {
+  width: 2px;
+  background-color: var(--pastel-blue);
+}
+
+/* 8) Projects grid */
+.homePage .projects {
+  flex: 1 1 65%;
+}
+.homePage .projects h2 {
+  font-size: 1.875rem;
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+}
+.homePage .projects .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+  gap: 1.5rem; /* gap-6 */
+}

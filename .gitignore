@@ -1,1 +1,7 @@
-/uploads
+# Node and React
+node_modules/
+build/
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
