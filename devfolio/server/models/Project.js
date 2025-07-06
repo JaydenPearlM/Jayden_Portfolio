@@ -1,13 +1,32 @@
 // server/models/Project.js
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const projectSchema = new mongoose.Schema({
+const projectSchema = new Schema({
   title:       { type: String, required: true },
   description: { type: String },
+
   // now store skills as an array of strings
   skills:      { type: [String], default: [] },
-  fileUploads: [String],
+
+  // raw uploaded files (HTML, CSS, JS, Python, notebooks, specs, etc.)
+  fileUploads: { type: [String], default: [] },
+
+  // thumbnail path
+  thumbnail:   { type: String },
+
+  // single HTML entry point for live demo
   demoLink:    { type: String },
+
+  // categorized uploads
+  codeFiles:    { type: [String], default: [] }, // .js, .css, .py
+  notebookFiles:{ type: [String], default: [] }, // converted .ipynb → .html
+  apiSpecs:     { type: [String], default: [] }, // .json/.yaml OpenAPI specs
+
+  // optional direct Colab URL
+  colabLink:   { type: String },
+
+  // GitHub repository link
   githubLink: {
     type: String,
     validate: {
@@ -16,10 +35,10 @@ const projectSchema = new mongoose.Schema({
       message:  'Only GitHub URLs are accepted (e.g. https://github.com/yourUsername/repo)'
     }
   },
-  // thumbnail path
-  thumbnail:   { type: String },
+
   // tags as an array of strings
   tags:        { type: [String], default: [] }
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('Project', projectSchema);

@@ -1,4 +1,4 @@
-// server/routes/projectRoutes.js
+// devfolio/server/routes/project.js
 const express = require('express');
 const multer  = require('multer');
 const path    = require('path');
@@ -18,24 +18,22 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// storage
+// storage config
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename:    (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
+    cb(null, file.originalname);
   }
 });
 
-// allow code files and one thumbnail image
+// fileFilter: allow HTML, CSS, JS, plus thumbnail images
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
-    // allow HTML, CSS, JS, Python, Java, ZIP
-    if (['.html', '.css', '.js', '.py', '.java', '.zip'].includes(ext)) {
+    if (['.html', '.css', '.js'].includes(ext)) {
       return cb(null, true);
     }
-    // allow a single thumbnail image
     if (file.mimetype.startsWith('image/')) {
       return cb(null, true);
     }
@@ -43,15 +41,15 @@ const upload = multer({
   }
 });
 
-// accept exactly these two fields
+// accept two named fields: fileUploads[] & thumbnail
 const cpUpload = upload.fields([
   { name: 'fileUploads', maxCount: 5 },
   { name: 'thumbnail',   maxCount: 1 }
 ]);
 
 // Routes
-router.post('/',    cpUpload,     createProject);
-router.put('/:id',  cpUpload,     updateProject);
+router.post('/',    cpUpload, createProject);
+router.put('/:id',  cpUpload, updateProject);
 router.get('/',     getProjects);
 router.delete('/:id', deleteProject);
 

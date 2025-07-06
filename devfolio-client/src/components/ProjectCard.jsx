@@ -1,5 +1,5 @@
 // src/components/ProjectCard.jsx
-import React from 'react'
+import React from 'react';
 
 export default function ProjectCard({ project }) {
   const {
@@ -7,37 +7,29 @@ export default function ProjectCard({ project }) {
     title,
     description,
     thumbnail,
-    fileUploads = [],
+    demoLink,
     githubLink,
     tags = []
-  } = project
+  } = project;
 
-  // Determine image source
-  const src = thumbnail
-    ? thumbnail.startsWith('/')
-      ? thumbnail
-      : `/${thumbnail}`
-    : null
+  // Serve thumbnail via React proxy at /uploads
+  const imgSrc = thumbnail
+    ? (thumbnail.startsWith('/') ? thumbnail : `/${thumbnail}`)
+    : null;
 
-  // Open HTML demo in a fixed-size popup
+  // Popup demo from Express (port 5000)
+  const API_BASE = 'http://localhost:5000';
   const handleViewDemo = e => {
-    e.stopPropagation()
-    // Find HTML file among uploads or fall back to index.html
-    const htmlObj = fileUploads.find(f => {
-      const url = typeof f === 'string' ? f : f.url || f.path || ''
-      return url.toLowerCase().endsWith('.html')
-    })
-    let url = htmlObj
-      ? (typeof htmlObj === 'string' ? htmlObj : (htmlObj.url || htmlObj.path))
-      : `/uploads/${_id}/index.html`
-    if (!url.startsWith('/')) url = `/${url}`
-
+    e.stopPropagation();
+    if (!demoLink) return;
+    const path = demoLink.startsWith('/') ? demoLink : `/${demoLink}`;
+    const url = `${API_BASE}${path}`;
     window.open(
       url,
       `demo-${_id}`,
       'width=500,height=500,resizable,scrollbars'
-    )
-  }
+    );
+  };
 
   return (
     <div
@@ -48,11 +40,11 @@ export default function ProjectCard({ project }) {
       "
       style={{ width: 350, height: 350, fontFamily: '"Montserrat", sans-serif' }}
     >
-      {/* Thumbnail with pastel-blue border */}
+      {/* Thumbnail */}
       <div className="w-full h-44 overflow-hidden rounded border-2 border-blue-200 mb-4">
-        {src ? (
+        {imgSrc ? (
           <img
-            src={src}
+            src={imgSrc}
             alt={title}
             className="w-full h-full object-cover"
           />
@@ -68,14 +60,13 @@ export default function ProjectCard({ project }) {
         {title}
       </h3>
 
-      {/* Description with scrollbar up to 500px max height */}
+      {/* Description */}
       <div className="text-gray-700 text-sm mb-4 overflow-y-auto max-h-[500px]">
         {description || 'No description.'}
       </div>
 
-      {/* Bottom row: View Demo | GitHub | Tags */}
+      {/* Footer */}
       <div className="mt-auto grid grid-cols-3 items-center px-3 pb-2">
-        {/* View Demo (left) */}
         <button
           onClick={handleViewDemo}
           className="justify-self-start px-3 py-1 rounded-full text-xs"
@@ -84,7 +75,6 @@ export default function ProjectCard({ project }) {
           View Demo
         </button>
 
-        {/* GitHub Link (center) */}
         {githubLink ? (
           <a
             href={githubLink}
@@ -100,7 +90,6 @@ export default function ProjectCard({ project }) {
           <div />
         )}
 
-        {/* Tags (right) */}
         <div className="justify-self-end flex space-x-1">
           {tags.map((tag, idx) => (
             <span
@@ -113,5 +102,5 @@ export default function ProjectCard({ project }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

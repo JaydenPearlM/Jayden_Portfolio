@@ -92,6 +92,21 @@ export default function AddProjectForm({
           />
         </div>
 
+        {/* DEMO URL (optional) */}
+        <div>
+          <label htmlFor="demoLink" className="font-medium mb-1 block">Demo URL (optional)</label>
+          <input
+            id="demoLink"
+            name="demoLink"
+            type="url"
+            placeholder="https://your-demo-site.com"
+            maxLength={MAX_TEXT}
+            value={formData.demoLink || ''}
+            onChange={handleTextChange}
+            className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
         {/* File Uploads */}
         <div>
           <label htmlFor="fileUploads" className="font-medium mb-1 block">File Uploads</label>
@@ -103,20 +118,6 @@ export default function AddProjectForm({
             multiple
             onChange={handleFileChange}
             className="w-full"
-          />
-        </div>
-
-        {/* Demo Link */}
-        <div>
-          <label htmlFor="demoLink" className="font-medium mb-1 block">Demo Link</label>
-          <input
-            id="demoLink"
-            name="demoLink"
-            type="url"
-            maxLength={MAX_TEXT}
-            value={formData.demoLink || ''}
-            onChange={handleTextChange}
-            className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
