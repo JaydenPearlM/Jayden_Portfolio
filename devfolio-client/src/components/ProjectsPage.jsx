@@ -84,7 +84,6 @@ export default function ProjectsPage() {
   };
 
   const handleDelete = id => {
-    // Ask for confirmation before deleting
     if (!window.confirm('Are you sure you want to delete this project?')) {
       return;
     }
@@ -96,7 +95,9 @@ export default function ProjectsPage() {
   };
 
   const filteredProjects = projects
-    .filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter(p =>
+      p.title.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     .slice(0, 10);
 
   return (
@@ -132,18 +133,21 @@ export default function ProjectsPage() {
           </thead>
           <tbody>
             {filteredProjects.map(proj => (
-              <tr key={proj._id} className="border-b hover:bg-gray-100">
+              <tr
+                key={proj._id}
+                className="border-b hover:bg-gray-100"
+              >
                 <td className="p-2">{proj.title}</td>
                 <td className="p-2 space-x-2">
                   <button
-                    className="bg-yellow-400 text-white px-3 py-1 rounded"
                     onClick={() => handleEdit(proj)}
+                    className="px-3 py-1 bg-blue-200 text-blue-800 rounded"
                   >
                     Edit
                   </button>
                   <button
-                    className="bg-red-500 text-white px-3 py-1 rounded"
                     onClick={() => handleDelete(proj._id)}
+                    className="px-3 py-1 bg-red-200 text-red-800 rounded"
                   >
                     Delete
                   </button>

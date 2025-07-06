@@ -33,7 +33,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
         {/* Centered Header with solid blue background */}
         <h2 className="text-2xl font-bold text-center text-white px-4 py-3 rounded-md bg-blue-500">
-          Devfolio 
+          Admin Navigator
         </h2>
 
         <nav className="space-y-1">
