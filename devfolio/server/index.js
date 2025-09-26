@@ -41,10 +41,6 @@ app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, '..', 'devfolio-client', 'build', 'index.html'));
 });
 
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'devfolio-client', 'build', 'index.html'));
-});
-
 // Healthcheck
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
