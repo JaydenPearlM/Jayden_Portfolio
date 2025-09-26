@@ -39,4 +39,5 @@ public/demos/
 
 devfolio/.env
 devfolio/server/.env
-devfolio-client/.env
+devfolio-client/.envdevfolio/server/.env
+devfolio/.env
