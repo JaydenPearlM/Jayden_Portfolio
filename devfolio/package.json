@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "dev": "nodemon server/index.js",   
-    "start": "node devfolio/server/index.cjs"
+    "start": "node devfolio/server/index.js"
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
