@@ -5,11 +5,6 @@ const mongoose = require('mongoose');
 const cors     = require('cors');
 const helmet   = require('helmet');
 
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
-});
-
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const app  = express();
@@ -42,7 +37,11 @@ app.use('/api/projects', projectRoutes);    // GET public; POST/PUT/DELETE prote
 //   POSTs are public (in the router); GETs are verifyAdmin-protected (in the router)
 app.use('/api/analytics', analyticsRoutes);
 
-app.get('*', (req, res) => {
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+});
+
+app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
 });
 
