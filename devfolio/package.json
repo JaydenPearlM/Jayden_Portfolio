@@ -3,9 +3,18 @@
   "version": "1.0.0",
   "description": "Portfolio management backend",
   "main": "server/index.js",
+{
+  "name": "devfolio-server",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20 <21" },
   "scripts": {
-    "dev": "nodemon server/index.js",   
-    "start": "node devfolio/server/index.js"
+    "dev": "nodemon server/index.js",
+    "start": "node server/index.js",
+    "render-build": "NPM_CONFIG_PRODUCTION=false npm install && NPM_CONFIG_PRODUCTION=false npm --prefix devfolio-client install && CI=false npm --prefix devfolio-client run build"
+  }
+
+
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
