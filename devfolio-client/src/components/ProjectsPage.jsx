@@ -1,126 +1,134 @@
-// devfolio-client/src/pages/ProjectsPage.jsx
-
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import AddProjectForm from './AddProjectForm';
-import ProjectCard from './ProjectCard';
+// src/components/ProjectsPage.jsx
+import React, { useEffect, useMemo, useState } from "react";
+import AddProjectForm from "./AddProjectForm"; // adjust path if needed
 
 export default function ProjectsPage() {
   const initialForm = {
-    title: '',
-    description: '',
-    githubLink: '',
-    linkedin: '',
-    tags: '',
+    title: "",
+    description: "",
+    skills: "",
+    tags: "",
+    demoLink: "",
+    githubLink: "",
+    linkedinLink: "",
+    thumbnail: null,
     images: [],
-    videos: [],
-    demoLink: '',
-    demoZip: null,
   };
 
   const [projects, setProjects] = useState([]);
   const [formData, setFormData] = useState(initialForm);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [editId, setEditId] = useState(null);
+  const [error, setError] = useState("");
 
-  const handleChange = e => {
-    const { name, value, files } = e.target;
+  const handleChange = (e) => {
+    const { name, value, files, multiple } = e.target;
     if (files) {
-      setFormData(fd => ({ ...fd, [name]: Array.from(files) }));
+      const arr = Array.from(files || []);
+      setFormData((fd) => ({ ...fd, [name]: multiple ? arr : (arr[0] ?? null) }));
     } else {
-      setFormData(fd => ({ ...fd, [name]: value }));
+      setFormData((fd) => ({ ...fd, [name]: value }));
     }
+    setError("");
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const buildFormData = () => {
     const data = new FormData();
     Object.entries(formData).forEach(([key, val]) => {
+      if (val == null || val === "") return;
       if (Array.isArray(val)) {
-        val.forEach(v => data.append(key, v));
-      } else if (val != null) {
+        val.forEach((v) => data.append(key, v));
+      } else {
         data.append(key, val);
       }
     });
-
-    try {
-      if (editId) {
-        await axios.put(`/api/projects/${editId}`, data, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-      } else {
-        await axios.post('/api/projects', data, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-      }
-
-      setFormData(initialForm);
-      setEditId(null);
-      loadProjects();
-    } catch (error) {
-      console.error('Error uploading project:', error);
-    }
+    return data;
   };
 
-  const loadProjects = () => {
-    axios
-      .get('/api/projects')
-      .then(res => setProjects(res.data))
-      .catch(err => console.error('Failed to load projects:', err));
+  const loadProjects = async () => {
+    try {
+      const res = await fetch("/api/projects");
+      const json = await res.json();
+      setProjects(Array.isArray(json) ? json : json.projects || []);
+    } catch (err) {
+      console.error("Failed to load projects:", err);
+    }
   };
 
   useEffect(() => {
     loadProjects();
   }, []);
 
-  const handleEdit = project => {
-    setFormData({
-      ...project,
-      images: [],
-      videos: [],
-      demoZip: null,
-    });
-    setEditId(project._id);
-  };
+  const handleSubmit = async () => {
+    try {
+      const data = buildFormData();
+      const method = editId ? "PUT" : "POST";
+      const url = editId ? `/api/projects/${editId}` : "/api/projects";
 
-  const handleDelete = id => {
-    if (!window.confirm('Are you sure you want to delete this project?')) {
-      return;
+      const res = await fetch(url, { method, body: data });
+      if (!res.ok) throw new Error(await res.text());
+
+      setFormData(initialForm);
+      setEditId(null);
+      await loadProjects();
+    } catch (err) {
+      console.error("Error uploading project:", err);
+      setError("Upload failed. Check console for details.");
     }
-
-    axios
-      .delete(`/api/projects/${id}`)
-      .then(() => loadProjects())
-      .catch(err => console.error('Failed to delete project:', err));
   };
 
-  const filteredProjects = projects
-    .filter(p =>
-      p.title.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .slice(0, 10);
+  const handleEdit = (project) => {
+    setFormData({
+      title: project.title || "",
+      description: project.description || "",
+      skills: Array.isArray(project.skills) ? project.skills.join(", ") : (project.skills || ""),
+      tags: Array.isArray(project.tags) ? project.tags.join(", ") : (project.tags || ""),
+      demoLink: project.demoLink || "",
+      githubLink: project.githubLink || "",
+      linkedinLink: project.linkedinLink || "",
+      thumbnail: null,
+      images: [],
+    });
+    setEditId(project._id || project.id);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this project?")) return;
+    try {
+      const res = await fetch(`/api/projects/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Delete failed");
+      await loadProjects();
+    } catch (err) {
+      console.error("Failed to delete project:", err);
+    }
+  };
+
+  const filteredProjects = useMemo(() => {
+    return projects
+      .filter((p) => (p.title || "").toLowerCase().includes(searchTerm.toLowerCase()))
+      .slice(0, 10);
+  }, [projects, searchTerm]);
 
   return (
-    <div className="flex gap-8 p-6">
-      {/* Upload Form */}
-      <div className="w-1/3">
+    <div className="flex flex-col lg:flex-row gap-8 p-6">
+      <div className="lg:w-1/3 w-full">
+        {error && <div className="mb-3 p-2 bg-red-100 text-red-700 rounded">{error}</div>}
         <AddProjectForm
           formData={formData}
-          setFormData={setFormData}
           handleChange={handleChange}
           handleSubmit={handleSubmit}
+          onSave={() => {}}
         />
       </div>
 
-      {/* Project List and Grid */}
-      <div className="w-2/3">
+      <div className="lg:w-2/3 w-full">
         <h2 className="text-2xl font-semibold mb-4">Project Gallery</h2>
 
         <input
           type="text"
           placeholder="Search by title..."
           value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="mb-4 w-full p-2 border rounded"
         />
 
@@ -132,11 +140,8 @@ export default function ProjectsPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredProjects.map(proj => (
-              <tr
-                key={proj._id}
-                className="border-b hover:bg-gray-100"
-              >
+            {filteredProjects.map((proj) => (
+              <tr key={proj._id || proj.id} className="border-b hover:bg-gray-100">
                 <td className="p-2">{proj.title}</td>
                 <td className="p-2 space-x-2">
                   <button
@@ -146,7 +151,7 @@ export default function ProjectsPage() {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(proj._id)}
+                    onClick={() => handleDelete(proj._id || proj.id)}
                     className="px-3 py-1 bg-red-200 text-red-800 rounded"
                   >
                     Delete
@@ -154,6 +159,13 @@ export default function ProjectsPage() {
                 </td>
               </tr>
             ))}
+            {filteredProjects.length === 0 && (
+              <tr>
+                <td colSpan={2} className="p-2 text-gray-500">
+                  No projects yet.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

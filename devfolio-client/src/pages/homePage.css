@@ -13,7 +13,7 @@
 
 /* 3) Global font & base bg */
 .homePage {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', "sans-serif";
   min-height: 100vh;
   background-color: var(--pastel-green);
 }
