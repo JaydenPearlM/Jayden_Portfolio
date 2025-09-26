@@ -4,6 +4,11 @@ const express  = require('express');
 const mongoose = require('mongoose');
 const cors     = require('cors');
 const helmet   = require('helmet');
+import { fileURLToPath } from 'url';
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+});
 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
@@ -22,6 +27,7 @@ app.use(cors({ origin: allowed, credentials: true }));
 // ── Static (thumbnails/uploads + demos)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/demos',   express.static(path.join(__dirname, 'public', 'demos')));
+app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 
 // ── Routers
 const adminAuth       = require('./routes/adminAuth');
@@ -35,6 +41,10 @@ app.use('/api/projects', projectRoutes);    // GET public; POST/PUT/DELETE prote
 // Analytics: mount at /api/analytics
 //   POSTs are public (in the router); GETs are verifyAdmin-protected (in the router)
 app.use('/api/analytics', analyticsRoutes);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+});
 
 // Healthcheck
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
