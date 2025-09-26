@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from 'C:/Users/maxwe/Desktop/Devfolio/Devfolio/Jayden_MERN_WEBSITE/devfolio-client/src/pages/lib/api';
-
+import { login } from './pages/lib/auth';            // if you’re in src/*
+// or '../pages/lib/auth' / '../../pages/lib/auth'
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import api from 'C:/Users/maxwe/Desktop/Devfolio/Devfolio/Jayden_MERN_WEBSITE/devfolio-client/src/pages/lib/api';
+import api from './pages/lib/api';
+
 import {
   Briefcase, Eye, FileText, Clock, Timer, AlertTriangle
 } from 'lucide-react';

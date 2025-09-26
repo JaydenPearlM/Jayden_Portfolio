@@ -2,8 +2,9 @@
 import React from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Home, Menu, X } from 'lucide-react';
-import { isAuthed, logout } from 'C:/Users/maxwe/Desktop/Devfolio/Devfolio/Jayden_MERN_WEBSITE/devfolio-client/src/pages/lib/auth';
-
+import { isAuthed, logout } from './pages/lib/auth';
+            // if you’re in src/*
++ // or '../pages/lib/auth' / '../../pages/lib/auth'
 export default function Sidebar({ isOpen, onClose }) {
   const loc = useLocation();
   const authed = isAuthed();
