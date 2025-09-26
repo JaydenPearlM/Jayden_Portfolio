@@ -1,9 +1,4 @@
 {
-  "name": "devfolio",
-  "version": "1.0.0",
-  "description": "Portfolio management backend",
-  "main": "server/index.js",
-{
   "name": "devfolio-server",
   "private": true,
   "type": "module",
