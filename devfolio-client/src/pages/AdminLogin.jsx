@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from './pages/lib/auth';            // if you’re in src/*
+import { login } from './src/pages/lib/auth';            // if you’re in src/*
 // or '../pages/lib/auth' / '../../pages/lib/auth'
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
