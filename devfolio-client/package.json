@@ -22,9 +22,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "concurrently \"npm run server\" \"npm run devfolio-client\"",
     "server": "C:/Users/maxwe/Desktop/My personal Projects/Devfolio/Jayden_MERN_WEBSITE/devfolio/server && npm run dev",
-    "client": "C:/Users/maxwe/Desktop/My personal Projects/Devfolio/Jayden_MERN_WEBSITE/devfolio-client && npm start",
+    "devfolio-client": "C:/Users/maxwe/Desktop/My personal Projects/Devfolio/Jayden_MERN_WEBSITE/devfolio-client && npm start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
