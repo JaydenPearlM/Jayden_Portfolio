@@ -16,13 +16,13 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // ── CORS (dev: local; prod: your Netlify/Vercel domain)
-const allowed = [ process.env.CLIENT_ORIGIN || 'http://localhost:3000' ];
+const allowed = [ process.env.DEVFOLIO-CLIENT_ORIGIN || 'http://localhost:3000' ];
 app.use(cors({ origin: allowed, credentials: true }));
 
 // ── Static (thumbnails/uploads + demos)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/demos',   express.static(path.join(__dirname, 'public', 'demos')));
-app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+app.use(express.static(path.join(__dirname, '..', 'devfolio-client', 'build')));
 
 // ── Routers
 const adminAuth       = require('./routes/adminAuth');
@@ -38,11 +38,11 @@ app.use('/api/projects', projectRoutes);    // GET public; POST/PUT/DELETE prote
 app.use('/api/analytics', analyticsRoutes);
 
 app.get('*', (_req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'devfolio-client', 'build', 'index.html'));
 });
 
 app.get('*', (_req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', 'devfolio-client', 'build', 'index.html'));
 });
 
 // Healthcheck
