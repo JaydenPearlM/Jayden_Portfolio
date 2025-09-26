@@ -1,6 +1,6 @@
 // server/controllers/analyticsController.js
 const mongoose = require('mongoose');
-const AnalyticsEvent = require('../models/AnalyticsEvent');
+const AnalyticsEvent = require('../models/analyticsEvent');
 
 // -------- helpers --------
 function buildTimeMatch(query) {

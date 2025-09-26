@@ -36,3 +36,7 @@ Thumbs.db
 # Uploads / artifacts
 uploads/
 public/demos/
+
+devfolio/.env
+devfolio/server/.env
+devfolio-client/.env
