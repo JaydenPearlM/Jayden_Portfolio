@@ -7,9 +7,6 @@
     "dev": "nodemon server/index.js",
     "start": "node server/index.js",
     "render-build": "NPM_CONFIG_PRODUCTION=false npm install && NPM_CONFIG_PRODUCTION=false npm --prefix devfolio-client install && CI=false npm --prefix devfolio-client run build"
-  }
-
-
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
