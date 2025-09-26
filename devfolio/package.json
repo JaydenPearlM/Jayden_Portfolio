@@ -4,8 +4,8 @@
   "description": "Portfolio management backend",
   "main": "server/index.js",
   "scripts": {
-    "dev": "nodemon server/index.js",
-    "start": "node server/index.js"
+    "dev": "nodemon server/index.js",   
+    "start": "node devfolio/server/index.cjs"
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
