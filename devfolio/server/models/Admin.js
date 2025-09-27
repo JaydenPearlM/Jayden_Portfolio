@@ -4,7 +4,7 @@ const bcrypt   = require('bcryptjs');
 const AdminSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   passwordHash: { type: String, required: true }
-});
+});{ timestamps: true }
 
 // Helper to compare a plain-text password
 AdminSchema.methods.comparePassword = function(password) {

@@ -21,9 +21,6 @@ app.use(express.json()); // <-- required so req.body has username/password
 
 app.use('/api/admin', adminRoutes);
 
-// ... other routes and app.listen(...)
-
-
 // ── Security & parsing
 app.use(helmet());
 app.use(express.json({ limit: '10mb' }));
