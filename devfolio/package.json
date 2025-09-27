@@ -2,18 +2,12 @@
   "name": "devfolio-server",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20 <21" },
-},
-
-{
+  "engines": { "node": ">=20 <23" },
   "scripts": {
     "dev": "nodemon server/index.js",
     "start": "node server/index.js",
-    "render-build": "npm ci && npm --prefix ../devfolio-client ci && npm --prefix ../devfolio-client run build && mkdir -p server/public/app && cp -r ../devolio-client/build/* server/public/app/ || cp -r ../devfolio-client/build/* server/public/app/"
+    "render-build": "npm ci && npm --prefix ../devfolio-client ci && npm --prefix ../devfolio-client run build && mkdir -p server/public/app && cp -r ../devfolio-client/build/* server/public/app/"
   },
-  "engines": { "node": ">=20 <23" }
-},
-
   "dependencies": {
     "adm-zip": "^0.5.16",
     "bcryptjs": "^3.0.2",
@@ -26,18 +20,6 @@
     "mongodb": "^6.17.0",
     "mongoose": "^7.5.0",
     "multer": "^1.4.5-lts.1",
-    "readable-stream": "^3.6.2",
-    "unzipper": "^0.12.3"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.28.0",
-    "autoprefixer": "^10.4.21",
-    "concurrently": "^9.1.2",
-    "eslint": "^9.28.0",
-    "eslint-plugin-react": "^7.37.5",
-    "globals": "^16.2.0",
-    "nodemon": "^3.1.10",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.7"
+    "unzipper": "^0.12.2"
   }
 }
