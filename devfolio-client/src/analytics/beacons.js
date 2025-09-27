@@ -1,6 +1,8 @@
 // src/analytics/beacons.js
 let installed = false;
 
+
+
 function postJSON(url, payload, useBeacon = false) {
   const pathname = window.location?.pathname;
   const body = JSON.stringify({ ...payload, path: pathname });

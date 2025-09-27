@@ -42,3 +42,23 @@ devfolio/server/.env
 devfolio-client/.env
 devfolio/server/.env
 devfolio/.env
+
+# node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# client build
+devfolio-client/build/
+
+# server runtime
+devfolio/server/uploads/
+devfolio/server/public/app/
+
+# env
+devfolio/server/.env
+
+
+devfolio-client/node_modules/
+devfolio-client/node_modules/.cache/
+devfolio/node_modules/

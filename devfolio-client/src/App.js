@@ -11,7 +11,10 @@ import LifeHub      from './personal-projects/LifeHub';
 import TCCGRetail   from './personal-projects/TcgRetail';
 import DemoPage     from './pages/DemoPage';
 import AdminLogin   from './pages/AdminLogin';
-import { isAuthed } from './src/pages/lib/auth';
+import { isAuthed } from './pages/lib/auth';
+
+
+
 import './App.css';
 
 // NEW: install non-visual analytics beacons (load time, session end, client errors)
