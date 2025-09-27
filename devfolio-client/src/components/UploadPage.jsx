@@ -48,12 +48,12 @@ export default function UploadPage() {
     // optional URLs may be blank
     if (formData.githubLink && !githubPattern.test(formData.githubLink)) {
       setError(
-        "GitHub must be a profile or repo URL (e.g. https://github.com/you or https://github.com/you/repo)."
+        "GitHub must be a profile or repo URL (e.g. https://github.com/JaydenPearlM or https://github.com/you/repo)."
       );
       return;
     }
     if (formData.linkedinLink && !linkedinPattern.test(formData.linkedinLink)) {
-      setError("LinkedIn must look like https://www.linkedin.com/in/yourProfile");
+      setError("LinkedIn must look like https://www.linkedin.com/in/jaydenmaxwell");
       return;
     }
     if (formData.demoLink && !demoPattern.test(formData.demoLink)) {
