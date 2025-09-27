@@ -12,7 +12,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setErr('');
     try {
-      const res = await api.post('/api/admin/login', { Jadmin, password6790 });
+      const res = await api.post('/api/admin/login', { username, password });
       localStorage.setItem('adminToken', res.data.token);
       nav('/'); // to Admin dashboard
     } catch (e) {
