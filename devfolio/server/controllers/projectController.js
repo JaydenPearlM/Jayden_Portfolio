@@ -4,6 +4,18 @@ const fsp = require('fs/promises');
 const path = require('path');
 const unzipper = require('unzipper'); // make sure installed: npm i unzipper
 const Project = require('../models/Project');
+// GET one project by id
+exports.getProjectById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const doc = await Project.findById(id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
+    res.json(doc);
+  } catch (err) {
+    console.error('getProjectById error:', err);
+    res.status(500).json({ error: 'Failed to get project' });
+  }
+};
 
 
 const ROOT_DIR   = path.join(__dirname, '..');
