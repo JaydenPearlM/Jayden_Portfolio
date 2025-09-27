@@ -7,8 +7,22 @@ const helmet   = require('helmet');
 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
-const app  = express();
+
 const PORT = process.env.PORT || 5000;
+const express = require('express');
+const cors = require('cors');
+const adminRoutes = require('./routes/admin'); // path/casing must match exactly on Linux
+
+const app = express();
+
+app.use(express.json()); // <-- required so req.body has username/password
+// If frontend is on a different origin (separate service), enable CORS:
+// app.use(cors({ origin: ['https://YOUR-FRONTEND.onrender.com'], credentials: true }));
+
+app.use('/api/admin', adminRoutes);
+
+// ... other routes and app.listen(...)
+
 
 // ── Security & parsing
 app.use(helmet());
