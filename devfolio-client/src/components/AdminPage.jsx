@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import api from './pages/lib/api';
+import api from '../pages/lib/api';
 import { isAuthed } from '../pages/lib/auth';
 
 

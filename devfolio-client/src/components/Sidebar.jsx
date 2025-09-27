@@ -6,6 +6,7 @@ import { isAuthed } from '../pages/lib/auth';
 import api from '../pages/lib/api';
 
 
+
 export default function Sidebar({ isOpen, onClose }) {
   const loc = useLocation();
   const authed = isAuthed();
