@@ -1,4 +1,4 @@
-// devfolio/server/routes/project.js
+// devfolio/server/routes/projects.js
 const express = require('express');
 const multer  = require('multer');
 const path    = require('path');
@@ -7,6 +7,7 @@ const fs      = require('fs');
 const {
   createProject,
   getProjects,
+  getProjectById,   // ← make sure your controller exports this
   updateProject,
   deleteProject
 } = require('../controllers/projectController');
@@ -28,7 +29,7 @@ const storage = multer.diskStorage({
   }
 });
 
-// fileFilter: allow ZIP for project files, plus images for thumbnail
+// allow one .zip for assets and one image for thumbnail
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
@@ -38,21 +39,19 @@ const upload = multer({
     if (isZip || isImage) return cb(null, true);
     return cb(new Error('Unsupported file type (only .zip for assets and images for thumbnail)'), false);
   },
-  limits: {
-    fileSize: 50 * 1024 * 1024 // 50MB per file
-  }
+  limits: { fileSize: 50 * 1024 * 1024 } // 50MB
 });
 
-// accept: assets (single ZIP) & thumbnail (single image)
 const cpUpload = upload.fields([
-  { name: 'assets',    maxCount: 1 }, // NEW: one .zip
+  { name: 'assets',    maxCount: 1 },
   { name: 'thumbnail', maxCount: 1 }
 ]);
 
-// Routes
+// REST routes
+router.get('/',       getProjects);        // list all
+router.get('/:id',    getProjectById);     // get one (needed by DemoPage)
 router.post('/',      cpUpload, createProject);
 router.put('/:id',    cpUpload, updateProject);
-router.get('/',       getProjects);
 router.delete('/:id', deleteProject);
 
 module.exports = router;
