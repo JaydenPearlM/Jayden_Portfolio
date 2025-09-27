@@ -4,7 +4,7 @@
   "engines": { "node": ">=20 <23" },
   "scripts": {
   "reset-admin": "node server/scripts/resetAdmin.js",   
-  "create-admin": "node server/scripts/createAdmin.js",
+  "cseed-admin": "node server/scripts/createAdmin.js",
     "dev": "nodemon server/index.js",
     "start": "node server/index.js",
     "render-build": "npm ci && npm --prefix ../devfolio-client ci && npm --prefix ../devfolio-client run build && mkdir -p server/public/app && cp -r ../devfolio-client/build/* server/public/app/"
