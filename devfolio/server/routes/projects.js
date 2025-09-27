@@ -48,7 +48,7 @@ const cpUpload = upload.fields([
 ]);
 
 // REST routes
-router.get('/',       getProjects);        // list all
+router.get('.',       getProjects);        // list all
 router.get('/:id',    getProjectById);     // get one (needed by DemoPage)
 router.post('/',      cpUpload, createProject);
 router.put('/:id',    cpUpload, updateProject);
