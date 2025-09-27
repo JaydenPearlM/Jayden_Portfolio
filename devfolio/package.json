@@ -3,11 +3,17 @@
   "private": true,
   "type": "module",
   "engines": { "node": ">=20 <21" },
+},
+
+{
   "scripts": {
     "dev": "nodemon server/index.js",
     "start": "node server/index.js",
-    "render-build": "NPM_CONFIG_PRODUCTION=false npm install && NPM_CONFIG_PRODUCTION=false npm --prefix devfolio-client install && CI=false npm --prefix devfolio-client run build"
+    "render-build": "npm ci && npm --prefix ../devfolio-client ci && npm --prefix ../devfolio-client run build && mkdir -p server/public/app && cp -r ../devolio-client/build/* server/public/app/ || cp -r ../devfolio-client/build/* server/public/app/"
   },
+  "engines": { "node": ">=20 <23" }
+},
+
   "dependencies": {
     "adm-zip": "^0.5.16",
     "bcryptjs": "^3.0.2",
