@@ -1,7 +1,7 @@
 // src/components/ProjectsPage.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import AddProjectForm from "./AddProjectForm"; // adjust path if needed
-import { isAuthed } from './pages/lib/auth';
+import { isAuthed } from '../pages/lib/auth';
 import api from '../pages/lib/api';
 
 

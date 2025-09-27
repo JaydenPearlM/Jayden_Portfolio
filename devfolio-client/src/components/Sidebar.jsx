@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Home, Menu, X } from 'lucide-react';
-import { isAuthed } from './pages/lib/auth';
+import { isAuthed } from '../pages/lib/auth';
 import api from '../pages/lib/api';
 
 
