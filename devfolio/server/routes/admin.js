@@ -11,8 +11,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'please_change_this';
 router.get('/health', (req, res) => res.json({ ok: true, t: Date.now() }));
 router.get('/debug', (req, res) => {
   res.json({
-    hasUser: !!process.env.ADMIN_USER,
-    hasPass: !!process.env.ADMIN_PASS,
+    hasUser: !!process.env.ADMIN_USERNAME,
+    hasPass: !!process.env.ADMIN_PASSWORD,
     hasJwt:  !!process.env.JWT_SECRET
   });
 });
@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
   }
 
   // 1) Env-based one-user login (preferred for your case)
-  if (process.env.ADMIN_USER && process.env.ADMIN_PASS) {
+  if (process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD) {
     if (username === process.env.ADMIN_USER && password === process.env.ADMIN_PASS) {
       const token = jwt.sign({ user: username, roles: ['admin'] }, JWT_SECRET, { expiresIn: '2h' });
       return res.json({ token });
