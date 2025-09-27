@@ -2,10 +2,9 @@
 import React from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Home, Menu, X } from 'lucide-react';
-import { isAuthed } from '../pages/lib/auth';
-import api from '../pages/lib/api';
 
-
+// ✅ Import BOTH isAuthed and logout from the correct path for components/*
+import { isAuthed, logout } from '../pages/lib/auth';
 
 export default function Sidebar({ isOpen, onClose }) {
   const loc = useLocation();
