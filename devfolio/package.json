@@ -1,7 +1,6 @@
 {
   "name": "devfolio-server",
   "private": true,
-  "type": "module",
   "engines": { "node": ">=20 <23" },
   "scripts": {
     "dev": "nodemon server/index.js",
