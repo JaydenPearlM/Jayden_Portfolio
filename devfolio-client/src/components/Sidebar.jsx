@@ -4,7 +4,6 @@ import { NavLink, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Home, Menu, X } from 'lucide-react';
 import { isAuthed, logout } from "../pages/lib/auth";
 
-
 export default function Sidebar({ isOpen, onClose }) {
   const loc = useLocation();
   const authed = isAuthed();

@@ -103,6 +103,10 @@ app.get('/api/projects/:id/code/raw', async (req, res) => {
   }
 });
 
+// Analytics: mount at /api/analytics
+//   POSTs are public (in the router); GETs are verifyAdmin-protected (in the router)
+app.use('/api/analytics', analyticsRoutes);
+
 // Healthcheck
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 

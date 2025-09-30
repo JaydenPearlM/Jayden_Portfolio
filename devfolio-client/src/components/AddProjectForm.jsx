@@ -59,6 +59,7 @@ export default function AddProjectForm({
     if (formFiles.codeZip) fd.append("codeZip", formFiles.codeZip); // 👈 NEW
 
     await handleSubmit(fd);
+    await handleSubmit();
     if (onSave) onSave();
   };
 
@@ -178,6 +179,7 @@ export default function AddProjectForm({
                 githubOk
                   ? "focus:ring-blue-500"
                   : "focus:ring-red-500 border-red-400"
+                githubOk ? "focus:ring-blue-500" : "focus:ring-red-500 border-red-400"
               }`}
             />
           </div>
@@ -215,6 +217,7 @@ export default function AddProjectForm({
               onChange={(e) =>
                 setFormFiles((f) => ({ ...f, thumbnail: e.target.files?.[0] }))
               }
+              onChange={handleChange}
               className="w-full"
             />
           </div>
@@ -260,6 +263,10 @@ export default function AddProjectForm({
               }
               className="block w-full border rounded-md px-3 py-2"
             />
+            <p className="text-xs text-gray-600 mt-1">
+              Tip: Upload a single <strong>.zip</strong> containing an <code>index.html</code> at the
+              root for a clean demo link (recommended).
+            </p>
           </div>
 
           <button
