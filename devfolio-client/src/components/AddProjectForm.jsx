@@ -176,10 +176,7 @@ export default function AddProjectForm({
               value={formData.githubLink || ""}
               onChange={handleChange}
               className={`w-full border p-2 rounded focus:outline-none focus:ring-2 ${
-                githubOk
-                  ? "focus:ring-blue-500"
-                  : "focus:ring-red-500 border-red-400"
-                githubOk ? "focus:ring-blue-500" : "focus:ring-red-500 border-red-400"
+               githubOk ? "focus:ring-blue-500" : "focus:ring-red-500 border-red-400"
               }`}
             />
           </div>
