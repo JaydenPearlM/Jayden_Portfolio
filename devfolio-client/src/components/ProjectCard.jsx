@@ -59,7 +59,7 @@ export default function ProjectCard({ project }) {
   return (
     <div
       className="
-      bg-orange-100 border-2 border-blue-200 rounded-xl shadow-md p-4 flex flex-col
+      bg-orange-200 border-2 border-blue-200 rounded-xl shadow-md p-4 flex flex-col
         transform transition-transform duration-200 ease-out
         hover:scale-105 hover:shadow-lg hover:z-20
       "

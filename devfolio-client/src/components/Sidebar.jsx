@@ -50,7 +50,7 @@ export default function Sidebar({ isOpen, onClose }) {
           </NavLink>
 
           {/* Admin-only links */}
-          {authed && (
+          {isAuthed && (
             <>
               <Link to="/_/admin" className={linkClass('/_/admin')}>
                 <LayoutDashboard className="w-5 h-5 mr-2" /> Analytics
