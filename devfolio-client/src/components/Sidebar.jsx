@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, UploadCloud, Home, Menu, X } from 'lucide-react';
+// src/components/Sidebar.jsx
+import React from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
+import { LayoutDashboard, Home, Menu, X } from 'lucide-react';
+import { isAuthed, logout } from "../pages/lib/auth";
 
 export default function Sidebar({ isOpen, onClose }) {
-  const linkClass = ({ isActive }) =>
-    `flex items-center px-3 py-2 mb-2 rounded ${
-      isActive ? 'bg-blue-200 font-semibold' : 'hover:bg-gray-100'
+  const loc = useLocation();
+  const authed = isAuthed();
+
+  const linkClass = (target) => {
+    const active = loc.pathname === target;
+    return `flex items-center px-3 py-2 mb-2 rounded ${
+      active ? 'bg-blue-200 font-semibold' : 'hover:bg-gray-100'
     }`;
+  };
 
   return (
     <>
@@ -33,29 +40,40 @@ export default function Sidebar({ isOpen, onClose }) {
 
         {/* Centered Header with solid blue background */}
         <h2 className="text-2xl font-bold text-center text-white px-4 py-3 rounded-md bg-blue-500">
-          Admin Navigator
+          Welcome!
         </h2>
 
         <nav className="space-y-1">
-          {/* Dashboard */}
-          <NavLink to="/" end className={linkClass}>
-            <LayoutDashboard className="w-5 h-5 mr-2" /> Dashboard
-          </NavLink>
-
-          {/* Upload Projects */}
-          <NavLink to="/projects" className={linkClass}>
-            <UploadCloud className="w-5 h-5 mr-2" /> Upload Projects
-          </NavLink>
-
           {/* Home Page (public) */}
-          <NavLink to="/home" className={linkClass}>
+          <NavLink to="/home" className={linkClass('/home')}>
             <Home className="w-5 h-5 mr-2" /> Home Page
           </NavLink>
+
+          {/* Admin-only links */}
+          {authed && (
+            <>
+              <Link to="/_/admin" className={linkClass('/_/admin')}>
+                <LayoutDashboard className="w-5 h-5 mr-2" /> Analytics
+              </Link>
+              <Link to="/_/admin/projects" className={linkClass('/_/admin/projects')}>
+                <LayoutDashboard className="w-5 h-5 mr-2" /> Manage Projects
+              </Link>
+              <button
+                onClick={logout}
+                className="flex items-center px-3 py-2 mb-2 rounded text-red-600 hover:bg-red-50"
+              >
+                Logout
+              </button>
+            </>
+          )}
         </nav>
 
-        {/* Bottom Bar for contact/copyright */}
+        {/* Bottom Bar */}
         <div className="mt-auto border-t-4 border-pink-200 pt-4 text-sm text-center text-gray-500">
-          © 2025 Devfolio • <a href="mailto:contact@devfolio.com" className="underline">Contact</a>
+          © 2025 Devfolio •{' '}
+          <a href="mailto:jaydenmaxwell6790@outlook.com" className="underline">
+            Contact
+          </a>
         </div>
       </aside>
     </>

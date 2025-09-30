@@ -1,7 +1,40 @@
 # Node and React
 node_modules/
 build/
+devfolio/server/.env
 .env
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+# env
+.env
+server/.env
+
+# node
+node_modules/
+devfolio/node_modules/
+devfolio-client/node_modules/
+
+# env
+.env
+devfolio/.env
+devfolio-client/.env
+
+# build artifacts
+devfolio-client/build/
+devfolio/server/public/app/
+
+# logs
+*.log
+npm-debug.log*
+
+# uploads & generated files
+devfolio/server/uploads/
+!devfolio/server/uploads/.gitkeep
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+devfolio_9_27_2025.zip
