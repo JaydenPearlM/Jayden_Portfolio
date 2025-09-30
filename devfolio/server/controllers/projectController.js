@@ -2,31 +2,23 @@
 const fs = require('fs');
 const fsp = require('fs/promises');
 const path = require('path');
-const unzipper = require('unzipper');         // for demos .zip (assets)
-const AdmZip = require('adm-zip');            // for codeZip extraction
+const unzipper = require('unzipper');     // for assets/demo zips
+const AdmZip = require('adm-zip');        // for code zips
 const Project = require('../models/Project');
 
-const ROOT_DIR    = path.join(__dirname, '..');
-const UPLOAD_DIR  = path.join(ROOT_DIR, 'uploads');
-const DEMOS_DIR   = path.join(ROOT_DIR, 'public', 'demos');
-const CODE_ROOT   = path.join(UPLOAD_DIR, 'code'); // filesystem base for code zips
+const ROOT_DIR   = path.join(__dirname, '..');
+const UPLOAD_DIR = path.join(ROOT_DIR, 'uploads');
+const DEMOS_DIR  = path.join(ROOT_DIR, 'public', 'demos');
+const CODE_ROOT  = path.join(UPLOAD_DIR, 'code'); // filesystem base for code zips
 
-// ensure required dirs exist
+// ensure required dirs exist (once)
 (async () => {
-  try { await fsp.mkdir(DEMOS_DIR, { recursive: true }); } catch {}
-  try { await fsp.mkdir(CODE_ROOT, { recursive: true }); } catch {}
+  try { await fsp.mkdir(UPLOAD_DIR, { recursive: true }); } catch {}
+  try { await fsp.mkdir(DEMOS_DIR,  { recursive: true }); } catch {}
+  try { await fsp.mkdir(CODE_ROOT,  { recursive: true }); } catch {}
 })();
 
 /* ----------------------------- helpers ---------------------------------- */
-const unzipper = require('unzipper'); // make sure installed: npm i unzipper
-const Project = require('../models/Project');
-
-// ensure demos dir exists
-(async () => {
-  try { await fsp.mkdir(DEMOS_DIR, { recursive: true }); } catch {}
-})();
-
-// --- helpers ---------------------------------------------------------------
 
 // split "a, b, c" -> ["a","b","c"]
 function splitList(val) {
@@ -35,9 +27,9 @@ function splitList(val) {
   return String(val).split(',').map(s => s.trim()).filter(Boolean);
 }
 
-// recursively find first index.html under root; returns relative path using forward slashes
+// recursively find first index.html under root; returns relative POSIX path or null
 async function findIndexHtmlRelative(root) {
-  const stack = ['']; // relative paths to visit; '' = root itself
+  const stack = ['']; // '' == root
   while (stack.length) {
     const rel = stack.pop();
     const dir = path.join(root, rel);
@@ -50,60 +42,71 @@ async function findIndexHtmlRelative(root) {
       const entRel = path.join(rel, ent.name);
       if (ent.isDirectory()) {
         stack.push(entRel);
-      } else if (ent.isFile()) {
-        if (ent.name.toLowerCase() === 'index.html') {
-          return entRel.split(path.sep).join('/'); // URL-friendly
-        }
+      } else if (ent.isFile() && ent.name.toLowerCase() === 'index.html') {
+        return entRel.split(path.sep).join('/'); // URL-friendly
       }
     }
   }
   return null;
 }
 
-// unzip a file to destination, returns relative path to located index.html (or null)
+// unzip a file to destination, then locate index.html (for demos/assets)
 async function unzipAndLocateIndex(zipFileFullPath, destDir) {
   await fsp.mkdir(destDir, { recursive: true });
-
   await new Promise((resolve, reject) => {
     fs.createReadStream(zipFileFullPath)
       .pipe(unzipper.Extract({ path: destDir }))
       .on('close', resolve)
       .on('error', reject);
   });
-
   return await findIndexHtmlRelative(destDir);
 }
 
 // build a public URL for demos with a given projectId and relative index path
 function demoUrl(projectId, relIndexPath) {
   const rel = (relIndexPath || 'index.html').replace(/\\/g, '/');
+  // If your server statically serves DEMOS_DIR at /demos:
   return `/demos/${projectId}/${rel}`;
+  // If you instead serve the whole public app at /app, change to:
+  // return `/app/demos/${projectId}/${rel}`;
 }
 
 // list all files recursively under a root, returning paths relative to that root (POSIX style)
-function listFilesRecursively(root) {
+function listFilesRecursively(rootAbs) {
   const out = [];
   (function walk(dir) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      const p = path.join(dir, entry.name);
-      const rel = path.relative(root, p).replace(/\\/g, '/');
-      if (entry.isDirectory()) walk(p);
-      else out.push(rel);
+      const abs = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(abs);
+      else out.push(abs);
     }
-  })(root);
-  return out;
+  })(rootAbs);
+  return out.map(p => path.relative(rootAbs, p).replace(/\\/g, '/'));
 }
 
 /* ---------------------------- controllers -------------------------------- */
 
-// GET all projects
-exports.getProjects = async (_req, res) => {
+// Alias expected by some routes
+exports.getAllProjects = async (_req, res) => {
   try {
-    const projects = await Project.find();
+    const projects = await Project.find().sort({ createdAt: -1 });
     res.json(projects);
   } catch (err) {
-    console.error('getProjects error:', err);
+    console.error('getAllProjects error:', err);
     res.status(500).json({ error: 'Failed to get projects' });
+  }
+};
+// Keep original name too, if other code calls it
+exports.getProjects = exports.getAllProjects;
+
+exports.getProjectById = async (req, res) => {
+  try {
+    const doc = await Project.findById(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
+    res.json(doc);
+  } catch (err) {
+    console.error('getProjectById error:', err);
+    res.status(500).json({ error: 'Failed to get project' });
   }
 };
 
@@ -124,9 +127,9 @@ exports.createProject = async (req, res) => {
       return res.status(400).json({ error: 'Title is required' });
     }
 
-    const assetsZip = req.files?.assets?.[0] || null;     // demo assets zip (for /public/demos)
-    const codeZip   = req.files?.codeZip?.[0] || null;    // NEW: code zip (for /uploads/code)
-    const thumbFile = req.files?.thumbnail?.[0] || null;
+    const assetsZip = req.files?.assets?.[0]   || null; // demo assets zip (for /public/demos)
+    const codeZip   = req.files?.codeZip?.[0]  || null; // code zip (for /uploads/code)
+    const thumbFile = req.files?.thumbnail?.[0]|| null;
 
     // Prepare project (need _id up front)
     const project = new Project({
@@ -139,7 +142,6 @@ exports.createProject = async (req, res) => {
       thumbnail: '',
       fileUploads: [],
       demoLink: demoLink || '',
-      // fields from your schema extension:
       codeRootDir: undefined,
       codeFiles: [],
       codeZipUrl: undefined
@@ -150,9 +152,10 @@ exports.createProject = async (req, res) => {
     // Thumbnail
     if (thumbFile) {
       project.thumbnail = `uploads/${thumbFile.filename}`;
+      project.fileUploads.push(project.thumbnail);
     }
 
-    // DEMO ZIP (unzip to /public/demos/<projectId>, auto-detect nested index.html)
+    // DEMO ZIP → /public/demos/<id> with auto index.html detection
     if (assetsZip) {
       const zipFull = path.join(UPLOAD_DIR, assetsZip.filename);
       const dest    = path.join(DEMOS_DIR, projectId);
@@ -162,24 +165,22 @@ exports.createProject = async (req, res) => {
         return res.status(400).json({ error: 'ZIP must contain an index.html (root or any subfolder)' });
       }
 
-      project.fileUploads.push(`uploads/${assetsZip.filename}`); // keep original assets zip
+      project.fileUploads.push(`uploads/${assetsZip.filename}`); // keep original uploaded zip
       project.demoLink = demoUrl(projectId, relIndex);
     }
 
-    // Save first so we have a persistent id before extracting code
+    // Save now so we persist the base doc (and its id)
     await project.save();
 
-    // CODE ZIP (extract to /uploads/code/<projectId> and record file list)
+    // CODE ZIP → /uploads/code/<id> and record file list
     if (codeZip) {
       const zipFileFullPath = path.join(UPLOAD_DIR, codeZip.filename);
-      const extractDirFs    = path.join(CODE_ROOT, projectId); // filesystem path
+      const extractDirFs    = path.join(CODE_ROOT, projectId);
       await fsp.mkdir(extractDirFs, { recursive: true });
 
-      // extract
       const zip = new AdmZip(zipFileFullPath);
       zip.extractAllTo(extractDirFs, true);
 
-      // record relative public root and files (served from /uploads)
       project.codeRootDir = `/uploads/code/${projectId}`;
       project.codeFiles   = listFilesRecursively(extractDirFs);
       project.codeZipUrl  = `uploads/${codeZip.filename}`;
@@ -189,13 +190,6 @@ exports.createProject = async (req, res) => {
     }
 
     return res.status(201).json(project);
-      project.fileUploads = [`uploads/${assetsZip.filename}`]; // keep original zip path if you want
-      project.demoLink = demoUrl(projectId, relIndex);
-    }
-
-    const saved = await project.save();
-    
-    return res.status(201).json(saved);
   } catch (err) {
     console.error('createProject error:', err);
     res.status(500).json({ error: 'Server error' });
@@ -217,13 +211,15 @@ exports.updateProject = async (req, res) => {
     if (req.body.skills != null)       project.skills = splitList(req.body.skills);
     if (req.body.tags != null)         project.tags   = splitList(req.body.tags);
 
-    const assetsZip = req.files?.assets?.[0] || null;
-    const codeZip   = req.files?.codeZip?.[0] || null;
-    const thumbFile = req.files?.thumbnail?.[0] || null;
+    const assetsZip = req.files?.assets?.[0]   || null;
+    const codeZip   = req.files?.codeZip?.[0]  || null;
+    const thumbFile = req.files?.thumbnail?.[0]|| null;
 
     // thumbnail
     if (thumbFile) {
       project.thumbnail = `uploads/${thumbFile.filename}`;
+      project.fileUploads = project.fileUploads || [];
+      project.fileUploads.push(project.thumbnail);
     }
 
     // replace DEMO zip → wipe old extracted files and re-unzip
@@ -249,16 +245,13 @@ exports.updateProject = async (req, res) => {
       project.fileUploads.push(`uploads/${assetsZip.filename}`);
     }
 
-    // NEW: replace codeZip → wipe old extracted code and re-extract
+    // replace codeZip → wipe old extracted code and re-extract
     if (codeZip) {
       const zipFileFullPath = path.join(UPLOAD_DIR, codeZip.filename);
       const extractDirFs    = path.join(CODE_ROOT, id);
 
       // clean old code dir
-      try {
-        await fsp.rm(extractDirFs, { recursive: true, force: true });
-      } catch {}
-
+      try { await fsp.rm(extractDirFs, { recursive: true, force: true }); } catch {}
       await fsp.mkdir(extractDirFs, { recursive: true });
 
       const zip = new AdmZip(zipFileFullPath);

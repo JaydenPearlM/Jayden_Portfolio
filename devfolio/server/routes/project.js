@@ -33,35 +33,21 @@ const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
-<<<<<<< HEAD
     const isZip   = ext === '.zip';
     const isImage = file.mimetype && file.mimetype.startsWith('image/');
     if (isZip || isImage) return cb(null, true);
     return cb(new Error('Unsupported file type (only .zip for assets/code and images for thumbnail)'), false);
-=======
-    const isZip = ext === '.zip';
-    const isImage = file.mimetype && file.mimetype.startsWith('image/');
-    if (isZip || isImage) return cb(null, true);
-    return cb(new Error('Unsupported file type (only .zip for assets and images for thumbnail)'), false);
->>>>>>> baa6666 (Fix upload)
   },
   limits: {
     fileSize: 50 * 1024 * 1024 // 50MB per file
   }
 });
 
-<<<<<<< HEAD
 // accept: thumbnail, project files, and optional code zip
 const cpUpload = upload.fields([
   { name: 'thumbnail',    maxCount: 1 },
   { name: 'projectFiles', maxCount: 20 }, // multi-file assets
   { name: 'codeZip',      maxCount: 1 }   // NEW: single zip for extracted code
-=======
-// accept: assets (single ZIP) & thumbnail (single image)
-const cpUpload = upload.fields([
-  { name: 'assets',    maxCount: 1 }, // NEW: one .zip
-  { name: 'thumbnail', maxCount: 1 }
->>>>>>> baa6666 (Fix upload)
 ]);
 
 // Routes
