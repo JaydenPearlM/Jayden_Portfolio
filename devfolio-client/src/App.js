@@ -13,7 +13,7 @@ import DemoPage     from './pages/DemoPage';
 import AdminLogin   from './pages/AdminLogin';
 import CodePreview  from './pages/CodePreview'; // 👈 NEW
 import { isAuthed } from "./pages/lib/auth";
-import { isAuthed } from "./pages/lib/auth";
+
 
 import './App.css';
 
