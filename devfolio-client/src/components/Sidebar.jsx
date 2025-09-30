@@ -6,7 +6,7 @@ import { isAuthed, logout } from "../pages/lib/auth";
 
 export default function Sidebar({ isOpen, onClose }) {
   const loc = useLocation();
-  const authed = isAuthed();
+  //const authed = isAuthed();
 
   const linkClass = (target) => {
     const active = loc.pathname === target;
