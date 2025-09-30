@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "adm-zip": "^0.5.16",
     "axios": "^1.10.0",
     "framer-motion": "^12.15.0",
     "lucide-react": "^0.515.0",
@@ -18,12 +19,13 @@
     "react-router-dom": "^7.6.2",
     "react-scripts": "^5.0.1",
     "recharts": "^2.15.3",
+    "unzipper": "^0.12.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "cd C:/Users/maxwe/Desktop/portfolio_management/devfolio && npm run dev",
-    "client": "cd C:/Users/maxwe/Desktop/portfolio_management/devfolio-client && npm start",
+    "server": "C:/Users/maxwe/Desktop/My personal Projects/Devfolio/Jayden_MERN_WEBSITE/devfolio/server && npm run dev",
+    "client": "C:/Users/maxwe/Desktop/My personal Projects/Devfolio/Jayden_MERN_WEBSITE/devfolio-client && npm start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import toast from 'react-hot-toast';
+import api from "../pages/lib/api";
+//import { isAuthed, logout } from "../pages/lib/auth";
+
 import {
   Briefcase, Eye, FileText, Clock, Timer, AlertTriangle
 } from 'lucide-react';
@@ -31,11 +33,21 @@ export default function AdminPage() {
   // Fetch analytics data from server
   const fetchAnalytics = () => {
     setLoading(true);
-    const params = rangeType === 'custom' && startDate && endDate
-      ? { start: startDate, end: endDate }
-      : { range: rangeType };
+    const params =
+      rangeType === 'custom' && startDate && endDate
+        ? { start: startDate, end: endDate }
+        : { range: rangeType };
 
-    axios.get('/api/admin/analytics', { params })
+    // Pull token from storage (adjust key if your auth uses a different one)
+    const token =
+      localStorage.getItem('adminToken') ||
+      localStorage.getItem('token');
+
+    api.get('/api/analytics/admin', {
+      params,
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      withCredentials: true,
+    })
       .then(res => {
         setAnalytics(res.data);
         setLastUpdated(new Date());
@@ -48,6 +60,9 @@ export default function AdminPage() {
 
   // Export analytics to CSV
   const handleExport = () => {
+    const top0 = analytics.topProjects?.[0] || {};
+    const topTitle = top0.title || top0.project?.title || 'N/A';
+
     const csvHeaders = [
       ['Metric', 'Value'],
       ['Page Views', analytics.totalViews],
@@ -55,8 +70,8 @@ export default function AdminPage() {
       ['Avg. Session (sec)', analytics.averageSessionDuration],
       ['Avg. Load Time (ms)', analytics.avgLoadTime],
       ['Error Count', analytics.errorCount],
-      ['Top Project', analytics.topProjects?.[0]?.project?.title || 'N/A'],
-      ['Top Project Clicks', analytics.topProjects?.[0]?.count || 0],
+      ['Top Project', topTitle],
+      ['Top Project Clicks', top0.count || 0],
     ];
 
     const dailyClicks = analytics.projectsPerDay.map(d => [d._id, d.count]);
@@ -84,6 +99,7 @@ export default function AdminPage() {
   // Format session duration nicely
   const formattedSession = `${Math.floor(analytics.averageSessionDuration / 60)}m ${analytics.averageSessionDuration % 60}s`;
   const topProject = analytics.topProjects[0] || null;
+  const topProjectTitle = topProject ? (topProject.title || topProject.project?.title) : null;
 
   return (
     <>
@@ -95,7 +111,7 @@ export default function AdminPage() {
           onClick={() => window.location.href = '/home'}
         >
           <Briefcase className="w-8 h-8 text-blue-500 group-hover:text-blue-600 transition" />
-          Admin Dashboard
+          Analytics
         </h1>
 
         {/* Export & Alerts */}
@@ -174,7 +190,7 @@ export default function AdminPage() {
             <h2 className="font-semibold mb-2">⭐ Top Project</h2>
             {topProject ? (
               <>
-                <p className="text-lg font-semibold">{topProject.project.title}</p>
+                <p className="text-lg font-semibold">{topProjectTitle}</p>
                 <p className="text-sm text-gray-600">{topProject.count} clicks</p>
               </>
             ) : (

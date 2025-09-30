@@ -19,9 +19,14 @@ const projectSchema = new Schema({
   demoLink:    { type: String },
 
   // categorized uploads
-  codeFiles:    { type: [String], default: [] }, // .js, .css, .py
-  notebookFiles:{ type: [String], default: [] }, // converted .ipynb → .html
-  apiSpecs:     { type: [String], default: [] }, // .json/.yaml OpenAPI specs
+  codeFiles:     { type: [String], default: [] }, // .js, .css, .py
+  notebookFiles: { type: [String], default: [] }, // converted .ipynb → .html
+  apiSpecs:      { type: [String], default: [] }, // .json/.yaml OpenAPI specs
+
+  // 🔹 new fields for structured code uploads
+  codeRootDir: { type: String },   // e.g. "/uploads/code/<projectId>"
+  codeFilesRel:{ type: [String], default: [] }, // relative paths in codeRootDir
+  codeZipUrl:  { type: String },   // optional download link to original zip
 
   // optional direct Colab URL
   colabLink:   { type: String },
@@ -30,7 +35,6 @@ const projectSchema = new Schema({
   githubLink: {
     type: String,
     validate: {
-      // only validate non-empty values
       validator: v => !v || /^https?:\/\/(www\.)?github\.com\/.+$/.test(v),
       message:  'Only GitHub URLs are accepted (e.g. https://github.com/yourUsername/repo)'
     }
