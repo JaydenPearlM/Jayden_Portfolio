@@ -1,4 +1,4 @@
-// devfolio/server/index.js
+// devfolio/server/index.js (CommonJS)
 const path     = require('path');
 const fs       = require('fs');
 const express  = require('express');
@@ -6,9 +6,26 @@ const mongoose = require('mongoose');
 const cors     = require('cors');
 const helmet   = require('helmet');
 
-require('dotenv').config({ path: path.join(__dirname, '.env') });
+// ── Load .env (prefer repo root: devfolio/.env; fallback: devfolio/server/.env)
+const ROOT_ENV   = path.join(__dirname, '..', '.env');
+const SERVER_ENV = path.join(__dirname, '.env');
+let ENV_TO_LOAD  = null;
 
-const Project = require('./models/Project'); // 👈 for code viewer
+if (fs.existsSync(ROOT_ENV)) {
+  ENV_TO_LOAD = ROOT_ENV;
+} else if (fs.existsSync(SERVER_ENV)) {
+  ENV_TO_LOAD = SERVER_ENV;
+}
+
+if (ENV_TO_LOAD) {
+  const res = require('dotenv').config({ path: ENV_TO_LOAD });
+  console.log(`[env] Loaded ${ENV_TO_LOAD}`);
+  console.log(`[env] Keys:`, res.parsed ? Object.keys(res.parsed) : '(none parsed)');
+} else {
+  console.warn('[env] No .env file found (root or server). Using process environment only.');
+}
+
+const Project = require('./models/Project'); // for code viewer
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
@@ -18,26 +35,39 @@ app.use(helmet());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// ── CORS (dev: local; prod: your Netlify/Vercel domain)
-const allowed = [ process.env.CLIENT_ORIGIN || 'http://localhost:3000' ];
-app.use(cors({ origin: allowed, credentials: true }));
+// ── CORS (dev: local; prod: your domain[s])
+// Support single origin or comma-separated list in CLIENT_ORIGIN
+const clientOriginRaw = process.env.CLIENT_ORIGIN || 'http://localhost:3000';
+const allowedOrigins = clientOriginRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+app.use(cors({
+  origin: function (origin, cb) {
+    // allow same-origin (no Origin header) and allowed list
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(new Error(`CORS blocked: ${origin} not in ${allowedOrigins.join(', ')}`));
+  },
+  credentials: true
+}));
+
+// ── Ensure static dirs exist (won’t crash if missing)
+function ensureDir(p) { try { fs.mkdirSync(p, { recursive: true }); } catch (_) {} }
+ensureDir(path.join(__dirname, 'uploads'));
+ensureDir(path.join(__dirname, 'uploads', 'code'));
+ensureDir(path.join(__dirname, 'public', 'demos'));
 
 // ── Static (thumbnails/uploads + demos + code)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/demos',   express.static(path.join(__dirname, 'public', 'demos')));
-app.use('/code',    express.static(path.join(__dirname, 'uploads', 'code'))); // 👈 serve code dir
+app.use('/code',    express.static(path.join(__dirname, 'uploads', 'code'))); // serve code dir
 
 // ── Routers
 const adminAuth       = require('./routes/adminAuth');
 const projectRoutes   = require('./routes/project');
 const analyticsRoutes = require('./routes/analytics');
 
-// Public:
-app.use('/api/admin',    adminAuth);        // POST /api/admin/login
-app.use('/api/projects', projectRoutes);    // GET public; POST/PUT/DELETE protected inside the router
-
-// Analytics: mount at /api/analytics
-//   POSTs are public (in the router); GETs are verifyAdmin-protected (in the router)
+// Public routes
+app.use('/api/admin',    adminAuth);      // POST /api/admin/login
+app.use('/api/projects', projectRoutes);  // GET public; POST/PUT/DELETE protected inside router
 app.use('/api/analytics', analyticsRoutes);
 
 // ── Code viewer helpers/endpoints
@@ -103,10 +133,6 @@ app.get('/api/projects/:id/code/raw', async (req, res) => {
   }
 });
 
-// Analytics: mount at /api/analytics
-//   POSTs are public (in the router); GETs are verifyAdmin-protected (in the router)
-app.use('/api/analytics', analyticsRoutes);
-
 // Healthcheck
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
@@ -117,7 +143,18 @@ app.use((err, req, res, _next) => {
 });
 
 // ── Connect DB & start
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+const MONGO_URI = (process.env.MONGO_URI || process.env.MONGODB_URI || '').trim();
+console.log('[env] Using CLIENT_ORIGIN(s):', allowedOrigins);
+console.log('[env] MONGO_URI present?', MONGO_URI ? 'yes' : 'no');
+if (!MONGO_URI) {
+  console.error('❌ Mongo URI not found. Expected MONGO_URI or MONGODB_URI in the loaded .env or process env.');
+  console.error('   process.env.MONGO_URI   =', process.env.MONGO_URI);
+  console.error('   process.env.MONGODB_URI =', process.env.MONGODB_URI);
+  process.exit(1);
+}
+
+// With Mongoose 7+, these legacy options are not required.
+mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 15000 })
   .then(() => {
     console.log('✅ MongoDB connected');
     app.listen(PORT, () => console.log(`🚀 Server listening on http://localhost:${PORT}`));

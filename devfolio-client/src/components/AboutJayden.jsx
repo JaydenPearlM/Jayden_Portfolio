@@ -5,7 +5,7 @@ export default function AboutJayden() {
   return (
     <section
       id="about"
-      className="w-full bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-100
+      className="w-full bg-gradient-to-r from-blue-100  to-blue-200
                  rounded-2xl shadow-lg p-8 border border-blue-200"
     >
       <h2 className="text-3xl font-oswald font-bold mb-6 text-blue-700 text-left">
