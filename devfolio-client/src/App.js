@@ -13,6 +13,8 @@ import DemoPage     from './pages/DemoPage';
 import AdminLogin   from './pages/AdminLogin';
 import CodePreview  from './pages/CodePreview'; // 👈 NEW
 import { isAuthed } from "./pages/lib/auth";
+import { isAuthed } from "./pages/lib/auth";
+
 import './App.css';
 
 // NEW: install non-visual analytics beacons (load time, session end, client errors)
@@ -87,18 +89,12 @@ export default function App() {
             <Route path="/_/login" element={<AdminLogin />} />
 
             {/* ADMIN-ONLY */}
-            <Route
-              path="/_/admin"
-              element={
-                <PrivateRoute><AdminPage /></PrivateRoute>
-              }
-            />
-            <Route
-              path="/_/admin/projects"
-              element={
-                <PrivateRoute><ProjectsPage /></PrivateRoute>
-              }
-            />
+            <Route path="/_/admin" element={
+              <PrivateRoute><AdminPage /></PrivateRoute>
+            } />
+            <Route path="/_/admin/projects" element={
+              <PrivateRoute><ProjectsPage /></PrivateRoute>
+            } />
 
             {/* Everything else → public home */}
             <Route path="*" element={<Navigate to="/home" replace />} />

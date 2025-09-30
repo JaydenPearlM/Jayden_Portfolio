@@ -18,6 +18,15 @@ const CODE_ROOT   = path.join(UPLOAD_DIR, 'code'); // filesystem base for code z
 })();
 
 /* ----------------------------- helpers ---------------------------------- */
+const unzipper = require('unzipper'); // make sure installed: npm i unzipper
+const Project = require('../models/Project');
+
+// ensure demos dir exists
+(async () => {
+  try { await fsp.mkdir(DEMOS_DIR, { recursive: true }); } catch {}
+})();
+
+// --- helpers ---------------------------------------------------------------
 
 // split "a, b, c" -> ["a","b","c"]
 function splitList(val) {
@@ -180,6 +189,13 @@ exports.createProject = async (req, res) => {
     }
 
     return res.status(201).json(project);
+      project.fileUploads = [`uploads/${assetsZip.filename}`]; // keep original zip path if you want
+      project.demoLink = demoUrl(projectId, relIndex);
+    }
+
+    const saved = await project.save();
+    
+    return res.status(201).json(saved);
   } catch (err) {
     console.error('createProject error:', err);
     res.status(500).json({ error: 'Server error' });
