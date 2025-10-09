@@ -10,14 +10,12 @@ yarn-error.log*
 .env
 server/.env
 
-<<<<<<< HEAD
 node_modules
 build
 dist
 .env
 .DS_Store
 coverage
-=======
 # node
 node_modules/
 devfolio/node_modules/
@@ -46,4 +44,3 @@ Thumbs.db
 .vscode/
 
 devfolio_9_27_2025.zip
->>>>>>> baa6666 (Fix upload)
