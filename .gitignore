@@ -1,46 +1,39 @@
-# Node and React
-node_modules/
-build/
-devfolio/server/.env
-.env
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-# env
-.env
-server/.env
-
-node_modules
-build
-dist
-.env
-.DS_Store
-coverage
-# node
+# Dependencies
 node_modules/
 devfolio/node_modules/
 devfolio-client/node_modules/
 
-# env
-.env
-devfolio/.env
-devfolio-client/.env
-
-# build artifacts
+# Build artifacts
+build/
+dist/
 devfolio-client/build/
 devfolio/server/public/app/
 
-# logs
+# Environment
+.env
+devfolio/.env
+devfolio-client/.env
+server/.env
+devfolio/server/.env
+
+# Logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# uploads & generated files
+# Uploads (keep placeholder)
 devfolio/server/uploads/
 !devfolio/server/uploads/.gitkeep
 
-# OS/editor
+# System/editor files
 .DS_Store
 Thumbs.db
 .vscode/
 
-devfolio_9_27_2025.zip
+# Other
+coverage/
+de
+node_modules/
+devfolio/node_modules/
+devfolio-client/node_modules/
