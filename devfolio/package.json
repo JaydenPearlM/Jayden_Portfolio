@@ -1,15 +1,13 @@
 {
   "name": "devfolio",
   "version": "1.0.0",
-  "description": "Portfolio management backend",
   "private": true,
+  "description": "Portfolio management backend",
   "main": "server/index.js",
+  "engines": { "node": "20.x" },
   "scripts": {
     "dev": "nodemon server/index.js",
     "start": "node server/index.js"
-  },
-  "engines": {
-    "node": "20.x"
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
