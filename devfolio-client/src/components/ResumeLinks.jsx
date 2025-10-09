@@ -38,7 +38,7 @@ export default function ResumeLinks() {
         <div className="w-64 flex flex-col gap-3 self-start">
           {/* LinkedIn */}
           <a
-            href="https://www.linkedin.com/in/your-profile"
+            href="https://www.linkedin.com/in/jaydenmaxwell"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full text-center px-5 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:bg-blue-700 transition"
@@ -48,7 +48,7 @@ export default function ResumeLinks() {
 
           {/* GitHub */}
           <a
-            href="https://github.com/your-username"
+            href="https://github.com/JaydenPearlM"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full text-center px-5 py-3 bg-gray-900 text-white font-semibold rounded-xl shadow hover:bg-gray-800 transition"

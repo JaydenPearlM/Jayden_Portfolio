@@ -163,3 +163,17 @@ mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 15000 })
     console.error('❌ MongoDB connection failed:', err.message);
     process.exit(1);
   });
+
+if (process.env.NODE_ENV === 'production') {
+  const clientPath = path.join(__dirname, '..', '..', 'devfolio-client', 'build');
+  app.use(express.static(clientPath));
+  app.get('*', (req, res) => {
+   if (
+      req.path.startsWith('/api') ||
+      req.path.startsWith('/uploads') ||
+      req.path.startsWith('/demos') ||
+      req.path.startsWith('/code')
+    ) return res.status(404).end();
+    res.sendFile(path.join(clientPath, 'index.html'));
+  });
+}
