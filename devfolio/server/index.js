@@ -11,6 +11,14 @@ const ROOT_ENV   = path.join(__dirname, '..', '.env');
 const SERVER_ENV = path.join(__dirname, '.env');
 let ENV_TO_LOAD  = null;
 
+app.get('/', (req, res) => {
+  res.type('text/plain').send('Backend working fine');
+});
+app.use((req, res) => {
+  res.status(404).type('text/plain').send('Not found');
+});
+
+
 if (fs.existsSync(ROOT_ENV)) {
   ENV_TO_LOAD = ROOT_ENV;
 } else if (fs.existsSync(SERVER_ENV)) {
@@ -24,6 +32,7 @@ if (ENV_TO_LOAD) {
 } else {
   console.warn('[env] No .env file found (root or server). Using process environment only.');
 }
+
 
 const Project = require('./models/Project'); // for code viewer
 
@@ -39,6 +48,9 @@ app.use(express.urlencoded({ extended: true }));
 // Support single origin or comma-separated list in CLIENT_ORIGIN
 const clientOriginRaw = process.env.CLIENT_ORIGIN || 'http://localhost:3000';
 const allowedOrigins = clientOriginRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+
+
 
 app.use(cors({
   origin: function (origin, cb) {
