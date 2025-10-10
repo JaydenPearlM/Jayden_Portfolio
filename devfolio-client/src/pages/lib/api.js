@@ -1,9 +1,11 @@
 // src/lib/api.js
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE || '', // CRA proxy in dev; full URL in prod
-});
+const API_BASE_RAW = process.env.REACT_APP_API_BASE || '/api';
+// strip trailing slashes; endpoints should start with "/"
+const API_BASE = API_BASE_RAW.replace(/\/+$/, '');
+
+const api = axios.create({ baseURL: API_BASE });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('adminToken');

@@ -14,6 +14,7 @@ import AdminLogin   from './pages/AdminLogin';
 import CodePreview  from './pages/CodePreview'; // 👈 NEW
 import { isAuthed } from "./pages/lib/auth";
 import './App.css';
+import Footer from "./components/footer";
 
 // NEW: install non-visual analytics beacons (load time, session end, client errors)
 import { initAnalyticsBeacons } from './analytics/beacons';
@@ -98,7 +99,8 @@ export default function App() {
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </div>
-      </div>
-    </BrowserRouter>
+         <Footer /> {/* always visible */}
+  </div>
+</BrowserRouter>
   );
 }
