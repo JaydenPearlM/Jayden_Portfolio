@@ -11,13 +11,6 @@ const ROOT_ENV   = path.join(__dirname, '..', '.env');
 const SERVER_ENV = path.join(__dirname, '.env');
 let ENV_TO_LOAD  = null;
 
-app.get('/', (req, res) => {
-  res.type('text/plain').send('Backend working fine');
-});
-app.use((req, res) => {
-  res.status(404).type('text/plain').send('Not found');
-});
-
 
 if (fs.existsSync(ROOT_ENV)) {
   ENV_TO_LOAD = ROOT_ENV;
@@ -43,6 +36,13 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+app.get('/', (req, res) => {
+  res.type('text/plain').send('Backend working fine');
+});
+app.use((req, res) => {
+  res.status(404).type('text/plain').send('Not found');
+});
 
 // ── CORS (dev: local; prod: your domain[s])
 // Support single origin or comma-separated list in CLIENT_ORIGIN
