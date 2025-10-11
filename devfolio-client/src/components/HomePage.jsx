@@ -15,7 +15,7 @@ export default function HomePage() {
 
   useEffect(() => {
     axios
-      .get("/api/projects")
+      .get("projects")
       .then((res) => setProjects(res.data))
       .catch((err) => console.error("Error loading projects:", err));
   }, []);
