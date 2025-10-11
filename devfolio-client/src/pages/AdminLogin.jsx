@@ -14,7 +14,7 @@ export default function AdminLogin() {
     setErr('');
     try {
       // baseURL already includes /api
-      const res = await api.post('/admin/login', { username, password });
+      const res = await api.post('/api/admin/login', { username, password });
       localStorage.setItem('adminToken', res.data.token);
       nav('/_/admin');
     } catch (e) {
