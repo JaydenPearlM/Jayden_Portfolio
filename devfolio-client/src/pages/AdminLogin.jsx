@@ -1,24 +1,25 @@
 // src/pages/AdminLogin.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from "./lib/api";
-
+import api from './lib/api'; // <-- lib lives at src/lib/api.js
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
-  const [password, setPassword]   = useState('');
-  const [err, setErr]             = useState('');
+  const [password, setPassword] = useState('');
+  const [err, setErr] = useState('');
   const nav = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setErr('');
     try {
+      // baseURL already includes /api
       const res = await api.post('/admin/login', { username, password });
       localStorage.setItem('adminToken', res.data.token);
-      nav('/_/admin'); // redirect to Admin
-    } catch {
-      setErr('Invalid credentials');
+      nav('/_/admin');
+    } catch (e) {
+      const msg = e?.response?.data?.error || 'Invalid credentials';
+      setErr(msg);
     }
   };
 

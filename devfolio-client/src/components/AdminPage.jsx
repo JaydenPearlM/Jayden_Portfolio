@@ -1,19 +1,20 @@
+// src/pages/AdminPage.jsx
 import React, { useEffect, useState, useCallback } from 'react';
-import axios from 'axios';
 import TopNavbar from './TopNavbar';
-
-const API_BASE = process.env.REACT_APP_API_BASE || ''; // "" in dev with CRA proxy
+import api from '../pages/lib/api';
+ // use the unified API client
 
 export default function AdminPage() {
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState(null);
+  const [error, setError] = useState(null);
   const [analytics, setAnalytics] = useState(null);
 
   // UI state for range
   const [rangeType, setRangeType] = useState('7'); // '7' | '30' | 'custom'
   const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate]     = useState('');
+  const [endDate, setEndDate] = useState('');
 
+  // Fetch analytics data from backend
   const fetchAnalytics = useCallback(async () => {
     try {
       setLoading(true);
@@ -24,15 +25,13 @@ export default function AdminPage() {
           ? { start: startDate, end: endDate }
           : { range: rangeType };
 
-      const opts = { params };
-      // only cross-origin in prod; CRA proxy in dev keeps same-origin
-      if (API_BASE) opts.withCredentials = true;
-
-      const res = await axios.get(`${API_BASE}/api/analytics/admin`, opts);
-      setAnalytics(res.data);
+      const { data } = await api.get('/analytics/admin', { params });
+      setAnalytics(data);
     } catch (err) {
       const status = err.response?.status;
-      const msg = status ? `Failed (${status}) at /api/analytics/admin` : 'Network error';
+      const msg = status
+        ? `Failed (${status}) at /api/analytics/admin`
+        : 'Network error';
       console.error('fetchAnalytics failed', {
         status,
         data: err.response?.data,
@@ -44,10 +43,13 @@ export default function AdminPage() {
     }
   }, [rangeType, startDate, endDate]);
 
-  useEffect(() => { fetchAnalytics(); }, [fetchAnalytics]);
+  useEffect(() => {
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
-  const topProject = analytics?.topProject ?? null;
-  const topProjectTitle = topProject ? (topProject.title || topProject.project?.title) : 'N/A';
+  const topProject = analytics?.topProjects?.[0] ?? null;
+  const topProjectTitle =
+    topProject?.title || topProject?.project?.title || 'N/A';
 
   return (
     <>
@@ -98,8 +100,14 @@ export default function AdminPage() {
         {/* Data */}
         {!loading && analytics && (
           <section className="mt-5 grid gap-3">
-            <div>Total visits: {analytics.totalVisits ?? 0}</div>
-            <div>Unique users: {analytics.uniqueUsers ?? 0}</div>
+            <div>Total visits: {analytics.totalViews ?? 0}</div>
+            <div>Resume clicks: {analytics.resumeClicks ?? 0}</div>
+            <div>Errors: {analytics.errorCount ?? 0}</div>
+            <div>Average load time: {analytics.avgLoadTime ?? 0} ms</div>
+            <div>
+              Average session duration:{' '}
+              {analytics.averageSessionDuration ?? 0} s
+            </div>
             <div>Top project: {topProjectTitle}</div>
           </section>
         )}
