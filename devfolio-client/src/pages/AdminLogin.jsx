@@ -13,7 +13,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setErr('');
     try {
-      // baseURL already includes /api
+      
       const res = await api.post('/api/admin/login', { username, password });
       localStorage.setItem('adminToken', res.data.token);
       nav('/_/admin');
