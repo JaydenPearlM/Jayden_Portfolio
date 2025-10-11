@@ -14,7 +14,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setErr('');
     try {
-      const res = await api.post('admin/login', { username, password });
+      const res = await api.post('/admin/login', { username, password });
       localStorage.setItem('adminToken', res.data.token);
       nav('/_/admin'); // redirect to Admin
     } catch {
