@@ -1,7 +1,7 @@
 // server/controllers/authController.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const AdminUser = require('../models/AdminUser');
+
 
 const JWT_SECRET = process.env.JWT_SECRET || 'change_me';
 
