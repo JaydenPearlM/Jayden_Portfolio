@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from "./lib/api";
 
+
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword]   = useState('');
@@ -13,7 +14,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setErr('');
     try {
-      const res = await api.post('/api/admin/login', { username, password });
+      const res = await api.post('admin/login', { username, password });
       localStorage.setItem('adminToken', res.data.token);
       nav('/_/admin'); // redirect to Admin
     } catch {

@@ -1,9 +1,7 @@
-// src/lib/api.js
+// Browser-only API client. No server imports here.
 import axios from 'axios';
 
-const API_BASE_RAW = process.env.REACT_APP_API_BASE || '/api';
-// strip trailing slashes; endpoints should start with "/"
-const API_BASE = API_BASE_RAW.replace(/\/+$/, '');
+const API_BASE = (process.env.REACT_APP_API_BASE || '/api').replace(/\/+$/, '');
 
 const api = axios.create({ baseURL: API_BASE });
 
@@ -14,3 +12,6 @@ api.interceptors.request.use((config) => {
 });
 
 export default api;
+
+// Optional helper for building absolute URLs to uploads, etc.
+export const API_ORIGIN = API_BASE.replace(/\/api$/, '');
