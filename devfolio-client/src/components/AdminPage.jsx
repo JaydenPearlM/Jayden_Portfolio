@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import api from "../pages/lib/api";
+import axios from 'axios';
 import { isAuthed, logout } from "../pages/lib/auth";
 
 import {
@@ -11,6 +12,8 @@ import {
 } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import TopNavbar from './TopNavbar';
+const API_BASE = process.env.REACT_APP_API_BASE || ''; // "" in dev with CRA proxy
+const useProxy = API_BASE === ''; // true in dev
 
 export default function AdminPage() {
   const [analytics, setAnalytics] = useState({
@@ -31,12 +34,28 @@ export default function AdminPage() {
   const [lastUpdated, setLastUpdated] = useState(null);
 
   // Fetch analytics data from server
-  const fetchAnalytics = () => {
+async function fetchAnalytics() {
+  try {
     setLoading(true);
+
     const params =
       rangeType === 'custom' && startDate && endDate
         ? { start: startDate, end: endDate }
         : { range: rangeType };
+
+    const opts = { params };
+    // Only send credentials when NOT using the dev proxy (i.e., real cross-origin)
+    if (!useProxy) opts.withCredentials = true;
+
+    const res = await axios.get(`${API_BASE}/api/analytics/admin`, opts);
+    setAnalytics(res.data); // or whatever state you store it in
+  } catch (err) {
+    console.error('fetchAnalytics failed', err);
+    setError('Failed to load analytics');
+  } finally {
+    setLoading(false);
+  }
+}
 
     // Pull token from storage (adjust key if your auth uses a different one)
     const token =
