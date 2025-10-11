@@ -1,24 +1,19 @@
 // server/middleware/auth.js
-const jwt   = require('jsonwebtoken');
-const Admin = require('../models/Admin');
-const JWT_SECRET = process.env.JWT_SECRET || 'please_change_this';
+const jwt = require('jsonwebtoken');
 
-async function verifyAdmin(req, res, next) {
+const JWT_SECRET = process.env.JWT_SECRET || 'change_me';
+
+function verifyAdmin(req, res, next) {
+  const h = req.headers.authorization || '';
+  const token = h.startsWith('Bearer ') ? h.slice(7) : null;
+  if (!token) return res.status(401).json({ error: 'No token' });
   try {
-    const auth = req.headers.authorization || '';
-    if (!auth.startsWith('Bearer ')) {
-      return res.status(401).json({ message: 'Missing token' });
-    }
-    const token = auth.split(' ')[1];
     const payload = jwt.verify(token, JWT_SECRET);
-    const admin = await Admin.findById(payload.id);
-    if (!admin) {
-      return res.status(403).json({ error: 'Forbidden: admins only' });
-    }
-    req.admin = admin;
+    if (payload.sub !== 'admin') return res.status(403).json({ error: 'Invalid token' });
+    req.admin = payload;
     next();
-  } catch (err) {
-    return res.status(401).json({ message: 'Invalid or expired token' });
+  } catch (e) {
+    return res.status(401).json({ error: 'Invalid token' });
   }
 }
 
