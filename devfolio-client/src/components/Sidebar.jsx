@@ -6,8 +6,9 @@ import { isAuthed, logout } from "../pages/lib/auth";
 
 export default function Sidebar({ isOpen, onClose }) {
   const loc = useLocation();
-  const authed = isAuthed(); // <-- call it
+  const authed = isAuthed();
 
+  // Keep active styling for admin links only
   const linkClass = (target) => {
     const active = loc.pathname === target || loc.pathname.startsWith(target + '/');
     return `flex items-center px-3 py-2 mb-2 rounded ${
@@ -41,7 +42,11 @@ export default function Sidebar({ isOpen, onClose }) {
         </h2>
 
         <nav className="space-y-1">
-          <NavLink to="/home" className={linkClass('/home')}>
+          {/* Home: transparent by default, blue on hover only */}
+          <NavLink
+            to="/home"
+            className="flex items-center w-full rounded-lg px-3 py-2 mb-2 bg-transparent text-slate-800 hover:bg-blue-200 hover:text-white transition-colors"
+          >
             <Home className="w-5 h-5 mr-2" /> Home Page
           </NavLink>
 
