@@ -45,7 +45,7 @@ export default function Sidebar({ isOpen, onClose }) {
           {/* Home: transparent by default, blue on hover only */}
           <NavLink
             to="/home"
-            className="flex items-center w-full rounded-lg px-3 py-2 mb-2 bg-transparent text-slate-800 hover:bg-blue-500 hover:text-white transition-colors"
+            className="flex items-center w-full rounded-lg px-3 py-2 mb-2 bg-transparent text-slate-800 hover:bg-blue-300 hover:text-white transition-colors"
           >
             <Home className="w-5 h-5 mr-2" /> Home Page
           </NavLink>
